@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mira Shop - Loja Virtual</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+    color: #333;
+  }
+  header {
+    background: #fff;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+  }
+  h1 {
+    margin: 0;
+    color: #222;
+  }
+  .categorias {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 30px 0;
+    gap: 20px;
+  }
+  .categoria {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: 0.3s;
+  }
+  .categoria:hover {
+    transform: scale(1.05);
+  }
+  .categoria a {
+    text-decoration: none;
+    color: #222;
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+  }
+  footer {
+    background: #222;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mira Shop</h1>
+</header>
+
+<div class="categorias">
+  <div class="categoria">
+    <i class="fas fa-tshirt fa-2x"></i>
+    <a href="femininas.html">Roupas Femininas</a>
+  </div>
+  <div class="categoria">
+    <i class="fas fa-male fa-2x"></i>
+    <a href="masculinas.html">Roupas Masculinas</a>
+  </div>
+  <div class="categoria">
+    <i class="fas fa-shopping-bag fa-2x"></i>
+    <a href="acessorios.html">Acessórios</a>
+  </div>
+  <div class="categoria">
+    <i class="fas fa-shoe-prints fa-2x"></i>
+    <a href="calcados.html">Calçados</a>
+  </div>
+</div>
+
+<footer>
+  &copy; 2024 Mira Shop. Todos os direitos reservados.
+</footer>
+
+</body>
+</html>
