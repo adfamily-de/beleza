@@ -1,89 +1,149 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Mira Shop - Loja Virtual</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chat com Perfis Aleatórios</title>
 <style>
   body {
-    margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #fafafa;
-    color: #333;
   }
-  header {
-    background: #fff;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 2px solid #ddd;
+  #login, #chats-area {
+    margin: 20px;
   }
-  h1 {
-    margin: 0;
-    color: #222;
+  #chats-area {
+    display: none;
   }
-  .categorias {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 30px 0;
-    gap: 20px;
+  #conversas {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 10px;
   }
-  .categoria {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: 0.3s;
-  }
-  .categoria:hover {
-    transform: scale(1.05);
-  }
-  .categoria a {
-    text-decoration: none;
-    color: #222;
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-  }
-  footer {
-    background: #222;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
+  button {
+    margin: 5px;
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Mira Shop</h1>
-</header>
-
-<div class="categorias">
-  <div class="categoria">
-    <i class="fas fa-tshirt fa-2x"></i>
-    <a href="femininas.html">Roupas Femininas</a>
-  </div>
-  <div class="categoria">
-    <i class="fas fa-male fa-2x"></i>
-    <a href="masculinas.html">Roupas Masculinas</a>
-  </div>
-  <div class="categoria">
-    <i class="fas fa-shopping-bag fa-2x"></i>
-    <a href="acessorios.html">Acessórios</a>
-  </div>
-  <div class="categoria">
-    <i class="fas fa-shoe-prints fa-2x"></i>
-    <a href="calcados.html">Calçados</a>
-  </div>
+<div id="login">
+  <h2>Escolha um perfil para iniciar o chat</h2>
+  <!-- Aqui serão inseridos os botões dinamicamente -->
+  <div id="botoes-perfis"></div>
 </div>
 
-<footer>
-  &copy; 2024 Mira Shop. Todos os direitos reservados.
-</footer>
+<div id="chats-area">
+  <h2>Chat</h2>
+  <div id="perfil-logado"></div>
+  <p id="bem-vindo"></p>
+  <div id="conversas"></div>
+  <input type="text" id="mensagem" placeholder="Digite sua mensagem" onkeydown="if(event.key==='Enter'){enviarMensagem();}"/>
+  <br/>
+  <button onclick="enviarMensagem()">Enviar</button>
+  <button onclick="voltar()">Voltar</button>
+</div>
+
+<script>
+// Lista de 20 perfis
+const perfis = [];
+for(let i=1; i<=20; i++){
+  perfis.push({id: i, nome: `Perfil ${i}`});
+}
+
+let perfilAtual = null;
+
+// Cria botões dinamicamente na tela de login
+function criarBotoesPerfis() {
+  const container = document.getElementById('botoes-perfis');
+  perfis.forEach(p => {
+    const btn = document.createElement('button');
+    btn.innerText = p.nome;
+    btn.onclick = () => abrirChat(p.id);
+    container.appendChild(btn);
+  });
+}
+
+// Recupera o parâmetro na URL
+function getParametroUrl(nome) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(nome);
+}
+
+// Abre o chat para o perfil selecionado
+function abrirChat(idPerfil) {
+  const perfil = perfis.find(p => p.id === idPerfil);
+  if (perfil) {
+    perfilAtual = perfil;
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('chats-area').style.display = 'block';
+    document.getElementById('perfil-logado').innerText = 'Logado como: ' + perfil.nome;
+    mostrarMensagemBoasVindas(perfil.nome);
+    carregarHistorico(perfil.id);
+  }
+}
+
+function mostrarMensagemBoasVindas(nomePerfil) {
+  const bemVindo = document.getElementById('bem-vindo');
+  bemVindo.innerText = `Olá, ${nomePerfil}! Que tal conversar com um estranho aleatório?`;
+}
+
+function enviarMensagem() {
+  const input = document.getElementById('mensagem');
+  const mensagem = input.value.trim();
+  if (mensagem && perfilAtual) {
+    salvarMensagem(perfilAtual.id, `Você: ${mensagem}`);
+    adicionarMensagemAoChat(`Você: ${mensagem}`);
+    input.value = '';
+  }
+}
+
+function adicionarMensagemAoChat(texto) {
+  const divConversa = document.getElementById('conversas');
+  const novaMsg = document.createElement('div');
+  novaMsg.innerText = texto;
+  divConversa.appendChild(novaMsg);
+  divConversa.scrollTop = divConversa.scrollHeight;
+}
+
+function voltar() {
+  document.getElementById('login').style.display = 'block';
+  document.getElementById('chats-area').style.display = 'none';
+  perfilAtual = null;
+}
+
+// Salva mensagem no armazenamento local
+function salvarMensagem(idPerfil, mensagem) {
+  const key = `historico_perfil_${idPerfil}`;
+  let historico = JSON.parse(localStorage.getItem(key)) || [];
+  historico.push({msg: mensagem, hora: new Date().toLocaleString()});
+  localStorage.setItem(key, JSON.stringify(historico));
+}
+
+// Carrega histórico de mensagens
+function carregarHistorico(idPerfil) {
+  const key = `historico_perfil_${idPerfil}`;
+  const historico = JSON.parse(localStorage.getItem(key)) || [];
+  const divConversa = document.getElementById('conversas');
+  divConversa.innerHTML = '';
+  historico.forEach(item => {
+    adicionarMensagemAoChat(item.msg);
+  });
+}
+
+// Verifica se veio um parâmetro na URL ao carregar
+window.onload = () => {
+  criarBotoesPerfis();
+  const perfilParam = getParametroUrl('perfil');
+  if (perfilParam) {
+    const idPerfil = parseInt(perfilParam);
+    if (perfis.some(p => p.id === idPerfil)) {
+      abrirChat(idPerfil);
+    }
+  }
+};
+</script>
 
 </body>
-</html>
+  </html>
